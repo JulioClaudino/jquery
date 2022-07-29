@@ -19,10 +19,9 @@ const data = [{
 $(document).ready(function () {
     var valorAnterior = '';
     var html = '';
-    var selecionado = '';
     var poderes = '';
     var control = true;
-    
+
     data.map((val) => {
         html += '<a class="list-group-item list-group-item-action' + (control ? ' active' : '') + '"' +
             'id="list-' + val.grupo + '-list" data-toggle="list"' +
@@ -37,7 +36,7 @@ $(document).ready(function () {
             'role="tabpanel" aria-labelledby="list-' + val.grupo + '-list">'
         val.permissao.map((val2) => {
             poderes += '<div class="row"><div class="col-5">' +
-                '<select id="' + val.grupo + '_' + val2 + '" class="form-control" name="select" disabled>' +
+                '<select id="' + val.grupo + '_' + val2 + '" class="form-control" name="' + val.grupo + '_' + val2 + '" disabled>' +
                 '<option value="editar" ' + (val2 === "editar" ? 'selected' : '') + '>editar</option>' +
                 '<option value="excluir" ' + (val2 === "excluir" ? 'selected' : '') + '>excluir</option>' +
                 '<option value="incluir" ' + (val2 === "incluir" ? 'selected' : '') + '>incluir</option>' +
@@ -54,7 +53,7 @@ $(document).ready(function () {
         control = false;
     })
     $('#nav-tabContent').html(poderes);
-    
+
     $('.editar').click(function (event) {
         valorAnterior = $(this).attr("valor");
         if ($(this).is(".btn-outline-primary")) {
@@ -62,23 +61,39 @@ $(document).ready(function () {
             $(this).toggleClass('btn-outline-primary btn-outline-success');
             $("#" + valorAnterior).prop('disabled', false);
         } else {
+            var i = 0;
+            var j = 0;
+            var valAntQue = valorAnterior.split("_");
+            var confirmar = $("#" + valorAnterior + " option:selected").val();
             $(this).html('<i class="las la-pen" style="font-size: 25px"></i>');
             $(this).toggleClass('btn-outline-success btn-outline-primary');
             $("#" + valorAnterior).prop('disabled', true);
+            data.map((val) => {
+                if (val.grupo == valAntQue[0]) {
+                    val.permissao.map((val2) => {
+                        debugger;
+                        if (val2 == valAntQue[1]) {
+                            data[i].permissao[j] = confirmar;
+                        }
+                        j++;
+                    })
+                }
+                i++;
+            });
         }
     });
 
-    $('select').on('change', function () {
+    $('select').change(function () {
+        var selecionado = $(this).val();
         var valAntQue = valorAnterior.split("_");
-        $(this).val()
         data.map((val) => {
             if (val.grupo == valAntQue[0]) {
                 val.permissao.map((val2) => {
-                    if (val2 == valAntQue[1]) {
-                        selecionado = $("#" + val.grupo + '_' + val2 ).val();
+                    if (val2 == selecionado) {
                         $("button[valor='" + valorAnterior + "']").toggleClass('btn-outline-success btn-outline-primary');
                         $("button[valor='" + valorAnterior + "']").html('<i class="las la-pen" style="font-size: 25px"></i>');
-                        $("#" + valorAnterior).prop('disabled', true);
+                        $(this).prop('disabled', true);
+                        $("option[value='" + valAntQue[1] + "']", this).prop('selected', true);
                         alert("A função " + selecionado + " já está cadastrada nesse grupo!");
                     }
                 })
