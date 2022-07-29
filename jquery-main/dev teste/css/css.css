@@ -1,0 +1,20 @@
+html, body, .container{
+    height: 100%;
+}
+
+.text-muted {
+    margin: 50px;
+}
+
+.btn, btn-primary, botton-person {
+    margin: 20px 0 0 0;
+}
+
+.img-person {
+    margin: 0 0 4px 0;
+}
+
+.form-person {
+    margin: 15px 0 0 0;
+}
+
