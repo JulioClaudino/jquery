@@ -21,6 +21,9 @@ if (dataVer) {
     dataVer = false;
 }
 var valorAnterior = '';
+var grupo_Valor = '';
+var selecionado = '';
+var valAntQue = '';
 $(document).ready(function () {
     var html = '';
     var poderes = '';
@@ -50,18 +53,18 @@ $(document).ready(function () {
                 '<button class="btn btn-outline-primary editar" valor="' + val.grupo + '_' + val2 + '" type="button data-toggle="tooltip" data-placement="top" title="Deletar opção ' + val2 + '""><i class="las la-pen" style="font-size: 25px"></i></button>' +
                 '</div>' +
                 '<div class="col-1 botaodois">' +
-                '<button class="btn btn-outline-danger remover" adicionar="list-' + val.grupo + '" remover="' + val.grupo + '" bloquearlista="list-' + val.grupo + '-list" type="button data-toggle="tooltip" data-placement="top" title="Deletar opção ' + val2 + '""><i class="las la-trash-alt" style="font-size: 25px"></i></button>' +
+                '<button class="btn btn-outline-danger remover" valorRemover="' + val.grupo + '_' + val2 + '" adicionar="list-' + val.grupo + '" remover="' + val.grupo + '" bloquearlista="list-' + val.grupo + '-list" type="button data-toggle="tooltip" data-placement="top" title="Deletar opção ' + val2 + '""><i class="las la-trash-alt" style="font-size: 25px"></i></button>' +
                 '</div></div>';
         })
         poderes += '<div class="col-md-4 offset-md-6">' +
-            '<button class="btn btn-outline-primary adicionar" adicionar="list-' + val.grupo + '" id="adicionar_' + val.grupo + '" valor="TI_visualizar" type="button data-toggle=" tooltip="" data-placement="top" title="Deletar opção visualizar"> <i class="las la-plus" style="font-size: 25px"></i></button>' +
+            '<button class="btn btn-outline-primary adicionar" adicionar="list-' + val.grupo + '" id="adicionar_' + val.grupo + '" type="button data-toggle=" tooltip="" data-placement="top" title="Deletar opção visualizar"> <i class="las la-plus" style="font-size: 25px"></i></button>' +
             '</div>'
         poderes += '</div>';
         control = false;
     })
     $('#nav-tabContent').html(poderes);
 
-    $('.editar').click(function (event) {
+    $('.tab-content').on('click', '.editar', function (event) {
         valorAnterior = $(this).attr("valor");
         if ($(this).is(".btn-outline-primary")) {
             $(this).html('<i class="las la-check-double" style="font-size: 25px"></i>');
@@ -70,7 +73,7 @@ $(document).ready(function () {
         } else {
             var i = 0;
             var j = 0;
-            var valAntQue = valorAnterior.split("_");
+            valAntQue = valorAnterior.split("_");
             var confirmar = $("#" + valorAnterior + " option:selected").val();
             $(this).html('<i class="las la-pen" style="font-size: 25px"></i>');
             $(this).toggleClass('btn-outline-success btn-outline-primary');
@@ -92,7 +95,7 @@ $(document).ready(function () {
 
     $('select').change(function () {
         var selecionado = $(this).val();
-        var valAntQue = valorAnterior.split("_");
+        valAntQue = valorAnterior.split("_");
         data.map((val) => {
             if (val.grupo == valAntQue[0]) {
                 val.permissao.map((val2) => {
@@ -111,7 +114,8 @@ $(document).ready(function () {
     $('.remover').click(function () {
         var i = 0;
         var j = 0;
-        var valAntQue = valorAnterior.split("_");
+        valorAnterior = $(this).attr("valorRemover");
+        valAntQue = valorAnterior.split("_");
         $('.' + valorAnterior).remove();
         data.map((val) => {
             if (val.grupo == valAntQue[0]) {
@@ -127,11 +131,18 @@ $(document).ready(function () {
     });
 
     $('.adicionar').click(function () {
+        $('#list-tab a').each(function (index) {
+            if ($(this).hasClass('active')) {
+                grupo_Valor = $(this).text();
+            }
+        });
         var adicionar = $(this).attr("adicionar");
-        var grupo_Valor = $(".remover").attr("remover");
+        valAntQue = "teste"
+
         $('.adicionar').hide();
-        $("#" + adicionar).append('<div class="row" id="adicionarDiv"><div class="col-5">' +
-            '<select class="form-control" name="' + grupo_Valor + '">' +
+        $('.bloquearLink').css("pointer-events", "none");
+        $("#" + adicionar).prepend('<div class="row" id="adicionarDiv"><div class="col-5">' +
+            '<select id="editarEsseId_' + grupo_Valor + '" class="form-control" name="' + grupo_Valor + '">' +
             '<option value="" data-default disabled selected></option>' +
             '<option value="editar">editar</option>' +
             '<option value="excluir">excluir</option>' +
@@ -139,12 +150,11 @@ $(document).ready(function () {
             '<option value="visualizar">visualizar</option>' +
             '</select></div >' +
             '<div class="col-1 botaoum">' +
-            '<button class="btn btn-success confirmar" valor="' + grupo_Valor + '" type="button data-toggle="tooltip" data-placement="top" title="Deletar opção ' + valorDois + '""><i class="lar la-check-circle" style="font-size: 25px"></i></button>' +
+            '<button class="btn btn-success confirmar" valor="' + grupo_Valor + '" data-toggle="tooltip" data-placement="top"><i class="lar la-check-circle" style="font-size: 25px"></i></button>' +
             '</div>' +
             '<div class="col-1 botaodois">' +
-            '<button class="btn btn-danger cancelar" cancelar="' + grupo_Valor + '" type="button data-toggle="tooltip" data-placement="top" title="Deletar opção ' + valorDois + '""><i class="las la-ban" style="font-size: 25px"></i></button>' +
+            '<button class="btn btn-danger cancelar" cancelar="' + grupo_Valor + '" data-toggle="tooltip" data-placement="top"><i class="las la-ban" style="font-size: 25px"></i></button>' +
             '</div></div>');
-        $(".bloquearLink").css("pointer-events", "none");
         controleCancelar();
     });
 
@@ -152,29 +162,81 @@ $(document).ready(function () {
 });
 
 function controleCancelar() {
-    $('.cancelar').click(function () {
+    $('.tab-content').on('click', '.cancelar', function () {
         $('#adicionarDiv').remove();
         $('.adicionar').removeAttr("style");
         $(".bloquearLink").css("pointer-events", "");
 
     });
 
-    $('select').change(function () {
-        debugger;
-        var selecionado = $(this).val();
-        var valAntQue = valorAnterior.split("_");
+    $('.tab-content').on('click', '.confirmar', function () {
+        if (selecionado == "") {
+            alert("Selecione uma permissão");
+        } else {
+            $(".confirmar").toggleClass('btn-success btn-outline-primary');
+            $(".confirmar").html('<i class="las la-pen" style="font-size: 25px"></i>');
+            $(".confirmar").toggleClass('confirmar editar');
+            $(".cancelar").toggleClass('btn-danger btn-outline-danger');
+            $(".cancelar").html('<i class="las la-trash-alt" style="font-size: 25px"></i>');
+            $(".cancelar").toggleClass('cancelar removerNovo');
+            $("#editarEsseId_" + grupo_Valor).prop('disabled', true);
+            $('.adicionar').removeAttr("style");
+            $(".bloquearLink").css("pointer-events", "");
+            var i = 0;
+            var j = 0;
+            data.map((val) => {
+                if (val.grupo == grupo_Valor) {
+                    val.permissao.map((val2) => {
+                        if (val2 == selecionado) {
+                            data[i].permissao[j] = confirmar;
+                        } else {
+                            data[i].permissao.push(selecionado);
+                            $("#adicionarDiv").toggleClass('' + grupo_Valor + '_' + selecionado + '');
+                        }
+                        j++;
+                    })
+                }
+                i++;
+            });
+            console.log(data);
+        }
+    });
+
+    $('.tab-content').on('click', '.removerNovo', function () {
+        var i = 0;
+        var j = 0;
+        $('#adicionarDiv').remove();
         data.map((val) => {
-            if (val.grupo == valAntQue[0]) {
+            if (val.grupo == grupo_Valor) {
                 val.permissao.map((val2) => {
                     if (val2 == selecionado) {
-                        $(".confirmar").toggleClass('btn-outline-success btn-outline-primary');
-                        $("button[valor='" + valorAnterior + "']").html('<i class="las la-pen" style="font-size: 25px"></i>');
-                        $(this).prop('disabled', true);
-                        $("option[value='" + valAntQue[1] + "']", this).prop('selected', true);
-                        alert("A função " + selecionado + " já está cadastrada nesse grupo!");
+                        data[i].permissao.splice([j], 1)
                     }
+                    j++;
                 })
             }
-        })
+            i++;
+        });
+    });
+
+    $('select').change(function () {
+        if (valAntQue == 'teste') {
+            selecionado = $(this).val();
+            data.map((val) => {
+                if (val.grupo == grupo_Valor) {
+                    val.permissao.map((val2) => {
+                        if (val2 == selecionado) {
+                            $(this).prop('disabled', true);
+                            alert("A função " + selecionado + " já está cadastrada nesse grupo!");
+                            $('#adicionarDiv').remove();
+                            $('.adicionar').removeAttr("style");
+                            $('.bloquearLink').css("pointer-events", "");
+                        }
+                    })
+                }
+            })
+        } else {
+
+        }
     });
 }
