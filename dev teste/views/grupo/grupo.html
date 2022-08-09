@@ -1,18 +1,43 @@
 <link rel="stylesheet" href="views/grupo/grupo.css" />
 <div class="jumbotron">
     <div class="container">
-        <div class="row justify-content-center align-items-center text-center">
-            <div class="col-5">
-                <h1 class="">Por favor registre-se</h1>
-                <p><br>Para ver o grupo você deve fazer o cadastro</p>
-                <button type="button" id="cadastroteste" class="btn btn-primary btn-lg btn-block">Ir para o
-                    cadastro</button>
+        <div class="row">
+            <div class="col-11 text-center">
+                <h1 class="titlo">Grupo</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div id="adicionarDiv" class="col-12">
+                <div id="excluir" class="list-group" id="list-tab" role="tablist">
+                    <div class="row justify-content-center">
+                        <div class="col-5">
+                            <div class="input-group mb-3">
+                                <input id="campo" class="form-control">
+                                <div class="col-1">
+                                    <div id="buttonEditar" class="input-group-append">
+                                        <button class="btn btn-outline-success editar" type="button">
+                                            <i class="las la-check-double" style="font-size: 20px"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-1 offset-md-1">
+                                    <div id="buttonExcluir" class="input-group-append">
+                                        <button class="btn btn-outline-danger excluir" type="button">
+                                            <i class="las la-trash-alt" style="font-size: 20px"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="buttonAdicionar" class="col-md-6 offset-md-8">
+                    <button class="btn btn-outline-primary adicionar" type="button">
+                        <i class="las la-plus" style="font-size: 20px"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </div>
-<script>
-    $('#cadastroteste').click(function () {
-        createPage('userRegister.html');
-    }); 
-</script>
+<script src="views/grupo/grupo.js"></script>

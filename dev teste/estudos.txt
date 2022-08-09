@@ -1,11 +1,1 @@
-requisições
-
-get
-
-post
-
-put
-
-update
-
-delete
+https://www.horadecodar.com.br/2021/09/06/como-salvar-arrays-na-localstorage-de-javascript/

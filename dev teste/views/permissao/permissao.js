@@ -137,8 +137,6 @@ $(document).ready(function () {
             }
         });
         var adicionar = $(this).attr("adicionar");
-        valAntQue = "teste"
-
         $('.adicionar').hide();
         $('.bloquearLink').css("pointer-events", "none");
         $("#" + adicionar).prepend('<div class="row" id="adicionarDiv"><div class="col-5">' +
@@ -158,10 +156,6 @@ $(document).ready(function () {
         controleCancelar();
     });
 
-
-});
-
-function controleCancelar() {
     $('.tab-content').on('click', '.cancelar', function () {
         $('#adicionarDiv').remove();
         $('.adicionar').removeAttr("style");
@@ -173,6 +167,7 @@ function controleCancelar() {
         if (selecionado == "") {
             alert("Selecione uma permissão");
         } else {
+            debugger;
             $(".confirmar").toggleClass('btn-success btn-outline-primary');
             $(".confirmar").html('<i class="las la-pen" style="font-size: 25px"></i>');
             $(".confirmar").toggleClass('confirmar editar');
@@ -182,21 +177,11 @@ function controleCancelar() {
             $("#editarEsseId_" + grupo_Valor).prop('disabled', true);
             $('.adicionar').removeAttr("style");
             $(".bloquearLink").css("pointer-events", "");
-            var i = 0;
-            var j = 0;
             data.map((val) => {
                 if (val.grupo == grupo_Valor) {
-                    val.permissao.map((val2) => {
-                        if (val2 == selecionado) {
-                            data[i].permissao[j] = confirmar;
-                        } else {
-                            data[i].permissao.push(selecionado);
-                            $("#adicionarDiv").toggleClass('' + grupo_Valor + '_' + selecionado + '');
-                        }
-                        j++;
-                    })
+                    val.permissao.push(selecionado);
                 }
-                i++;
+
             });
             console.log(data);
         }
@@ -218,25 +203,25 @@ function controleCancelar() {
             i++;
         });
     });
+});
+
+function controleCancelar() {
 
     $('select').change(function () {
-        if (valAntQue == 'teste') {
-            selecionado = $(this).val();
-            data.map((val) => {
-                if (val.grupo == grupo_Valor) {
-                    val.permissao.map((val2) => {
-                        if (val2 == selecionado) {
-                            $(this).prop('disabled', true);
-                            alert("A função " + selecionado + " já está cadastrada nesse grupo!");
-                            $('#adicionarDiv').remove();
-                            $('.adicionar').removeAttr("style");
-                            $('.bloquearLink').css("pointer-events", "");
-                        }
-                    })
-                }
-            })
-        } else {
-
-        }
+        selecionado = $(this).val();
+        data.map((val) => {
+            if (val.grupo == grupo_Valor) {
+                val.permissao.map((val2) => {
+                    if (val2 == selecionado) {
+                        $(this).prop('disabled', true);
+                        alert("A função " + selecionado + " já está cadastrada nesse grupo!");
+                        $('#adicionarDiv').remove();
+                        $('.adicionar').removeAttr("style");
+                        $('.bloquearLink').css("pointer-events", "");
+                    }
+                })
+            }
+        })
     });
+    selecionado = ''
 }
