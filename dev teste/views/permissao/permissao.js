@@ -24,6 +24,7 @@ var valorAnterior = '';
 var grupo_Valor = '';
 var selecionado = '';
 var valAntQue = '';
+var testeArray = '';
 $(document).ready(function () {
     var html = '';
     var poderes = '';
@@ -65,6 +66,11 @@ $(document).ready(function () {
     $('#nav-tabContent').html(poderes);
 
     $('.tab-content').on('click', '.editar', function (event) {
+        $('#list-tab a').each(function (index) {
+            if ($(this).hasClass('active')) {
+                grupo_Valor = $(this).text();
+            }
+        });
         valorAnterior = $(this).attr("valor");
         if ($(this).is(".btn-outline-primary")) {
             $(this).html('<i class="las la-check-double" style="font-size: 25px"></i>');
@@ -81,7 +87,10 @@ $(document).ready(function () {
             data.map((val) => {
                 if (val.grupo == valAntQue[0]) {
                     val.permissao.map((val2) => {
+                        debugger;
                         if (val2 == valAntQue[1]) {
+                            data[i].permissao[j] = confirmar;
+                        } if (val2 == testeArray) {
                             data[i].permissao[j] = confirmar;
                         }
                         j++;
@@ -89,26 +98,9 @@ $(document).ready(function () {
                 }
                 i++;
             });
-            console.log(data)
+            console.log(data);
+            testeArray = confirmar;
         }
-    });
-
-    $('select').change(function () {
-        var selecionado = $(this).val();
-        valAntQue = valorAnterior.split("_");
-        data.map((val) => {
-            if (val.grupo == valAntQue[0]) {
-                val.permissao.map((val2) => {
-                    if (val2 == selecionado) {
-                        $("button[valor='" + valorAnterior + "']").toggleClass('btn-outline-success btn-outline-primary');
-                        $("button[valor='" + valorAnterior + "']").html('<i class="las la-pen" style="font-size: 25px"></i>');
-                        $(this).prop('disabled', true);
-                        $("option[value='" + valAntQue[1] + "']", this).prop('selected', true);
-                        alert("A função " + selecionado + " já está cadastrada nesse grupo!");
-                    }
-                })
-            }
-        })
     });
 
     $('.remover').click(function () {
@@ -139,7 +131,7 @@ $(document).ready(function () {
         var adicionar = $(this).attr("adicionar");
         $('.adicionar').hide();
         $('.bloquearLink').css("pointer-events", "none");
-        $("#" + adicionar).prepend('<div class="row" id="adicionarDiv"><div class="col-5">' +
+        $("#" + adicionar).prepend('<div class="row sendoModificado" id="adicionarDiv"><div class="col-5">' +
             '<select id="editarEsseId_' + grupo_Valor + '" class="form-control" name="' + grupo_Valor + '">' +
             '<option value="" data-default disabled selected></option>' +
             '<option value="editar">editar</option>' +
@@ -167,16 +159,16 @@ $(document).ready(function () {
         if (selecionado == "") {
             alert("Selecione uma permissão");
         } else {
-            debugger;
             $(".confirmar").toggleClass('btn-success btn-outline-primary');
             $(".confirmar").html('<i class="las la-pen" style="font-size: 25px"></i>');
-            $(".confirmar").toggleClass('confirmar editar');
+            $(".confirmar").toggleClass('confirmar editarNovo');
             $(".cancelar").toggleClass('btn-danger btn-outline-danger');
             $(".cancelar").html('<i class="las la-trash-alt" style="font-size: 25px"></i>');
             $(".cancelar").toggleClass('cancelar removerNovo');
             $("#editarEsseId_" + grupo_Valor).prop('disabled', true);
             $('.adicionar').removeAttr("style");
             $(".bloquearLink").css("pointer-events", "");
+            $(".sendoModificado").toggleClass('sendoModificado modificado');
             data.map((val) => {
                 if (val.grupo == grupo_Valor) {
                     val.permissao.push(selecionado);
@@ -184,17 +176,48 @@ $(document).ready(function () {
 
             });
             console.log(data);
+            testeArray = selecionado;
+        }
+    });
+
+    $('.tab-content').on('click', '.editarNovo', function (event) {
+        if ($(this).is(".btn-outline-primary")) {
+            $(this).html('<i class="las la-check-double" style="font-size: 25px"></i>');
+            $(this).toggleClass('btn-outline-primary btn-outline-success');
+            $("#editarEsseId_" + grupo_Valor).prop('disabled', false);
+        } else {
+            var i = 0;
+            var j = 0;
+            $(this).html('<i class="las la-pen" style="font-size: 25px"></i>');
+            $(this).toggleClass('btn-outline-success btn-outline-primary');
+            $("#editarEsseId_" + grupo_Valor).prop('disabled', true);
+            data.map((val) => {
+                if (val.grupo == grupo_Valor) {
+                    val.permissao.map((val2) => {
+                        if (val2 == selecionado) {
+                            data[i].permissao[j] = selecionado;
+                        } if (val2 == testeArray) {
+                            data[i].permissao[j] = selecionado;
+                        }
+                        j++;
+                    })
+                }
+                i++;
+            });
+            console.log(data);
+            testeArray = selecionado;
         }
     });
 
     $('.tab-content').on('click', '.removerNovo', function () {
         var i = 0;
         var j = 0;
+        var removerArrayNovo = $("#editarEsseId_" + grupo_Valor + " option:selected").val();
         $('#adicionarDiv').remove();
         data.map((val) => {
             if (val.grupo == grupo_Valor) {
                 val.permissao.map((val2) => {
-                    if (val2 == selecionado) {
+                    if (val2 == removerArrayNovo) {
                         data[i].permissao.splice([j], 1)
                     }
                     j++;
@@ -203,25 +226,47 @@ $(document).ready(function () {
             i++;
         });
     });
-});
 
-function controleCancelar() {
-
-    $('select').change(function () {
+    $('.tab-content').on('change', 'select', function () {
         selecionado = $(this).val();
+        valAntQue = valorAnterior.split("_");
         data.map((val) => {
             if (val.grupo == grupo_Valor) {
                 val.permissao.map((val2) => {
                     if (val2 == selecionado) {
+                        $("button[valor='" + valorAnterior + "']").removeClass('btn-outline-success');
+                        $("button[valor='" + valorAnterior + "']").addClass('btn-outline-primary');
+                        $("button[valor='" + valorAnterior + "']").html('<i class="las la-pen" style="font-size: 25px"></i>');
                         $(this).prop('disabled', true);
+                        $("option[value='" + valAntQue[1] + "']", this).prop('selected', true);
                         alert("A função " + selecionado + " já está cadastrada nesse grupo!");
-                        $('#adicionarDiv').remove();
-                        $('.adicionar').removeAttr("style");
-                        $('.bloquearLink').css("pointer-events", "");
+                    }
+
+                    if ($('.modificado').is(".modificado")) {
+                        if (val2 == selecionado) {
+                            $(this).prop('disabled', true);
+                            $("option[value='" + testeArray + "']", this).prop('selected', true);
+                            $("button[valor='" + valorAnterior + "']").removeClass('btn-outline-success');
+                            $("button[valor='" + valorAnterior + "']").addClass('btn-outline-primary');
+                            $(".editarNovo").html('<i class="las la-pen" style="font-size: 25px"></i>');
+                        }
+                    }
+
+                    if ($('.sendoModificado').is(".sendoModificado")) {
+                        if (val2 == selecionado) {
+                            $('.sendoModificado').remove();
+                            $('.adicionar').removeAttr("style");
+                            $('.bloquearLink').css("pointer-events", "");
+                        }
                     }
                 })
             }
         })
     });
+});
+
+function controleCancelar() {
+
+
     selecionado = ''
 }
