@@ -25,6 +25,9 @@ var grupo_Valor = '';
 var selecionado = '';
 var valAntQue = '';
 var testeArray = '';
+var valorData = '';
+var selectId = '';
+var valorAnteriorArray = '';
 $(document).ready(function () {
     var html = '';
     var poderes = '';
@@ -35,7 +38,7 @@ $(document).ready(function () {
             'id="list-' + val.grupo + '-list" data-toggle="list"' +
             'href="#list-' + val.grupo + '" role="tab" aria-controls="' + val.grupo + '">' + val.grupo + '</a>'
         control = false;
-    })
+    });
     $('#list-tab').html(html);
 
     control = true;
@@ -54,7 +57,7 @@ $(document).ready(function () {
                 '<button class="btn btn-outline-primary editar" valor="' + val.grupo + '_' + val2 + '" type="button data-toggle="tooltip" data-placement="top" title="Deletar opção ' + val2 + '""><i class="las la-pen" style="font-size: 25px"></i></button>' +
                 '</div>' +
                 '<div class="col-1 botaodois">' +
-                '<button class="btn btn-outline-danger remover" valorRemover="' + val.grupo + '_' + val2 + '" adicionar="list-' + val.grupo + '" remover="' + val.grupo + '" bloquearlista="list-' + val.grupo + '-list" type="button data-toggle="tooltip" data-placement="top" title="Deletar opção ' + val2 + '""><i class="las la-trash-alt" style="font-size: 25px"></i></button>' +
+                '<button class="btn btn-outline-danger remover ' + val.grupo + '_' + val2 + '" valorRemover="' + val.grupo + '_' + val2 + '" adicionar="list-' + val.grupo + '" remover="' + val.grupo + '" bloquearlista="list-' + val.grupo + '-list" type="button data-toggle="tooltip" data-placement="top" title="Deletar opção ' + val2 + '""><i class="las la-trash-alt" style="font-size: 25px"></i></button>' +
                 '</div></div>';
         })
         poderes += '<div class="col-md-4 offset-md-6">' +
@@ -71,12 +74,13 @@ $(document).ready(function () {
                 grupo_Valor = $(this).text();
             }
         });
-        valorAnterior = $(this).attr("valor");
         if ($(this).is(".btn-outline-primary")) {
+            valorAnterior = $(this).attr("valor");
             $(this).html('<i class="las la-check-double" style="font-size: 25px"></i>');
             $(this).toggleClass('btn-outline-primary btn-outline-success');
             $("#" + valorAnterior).prop('disabled', false);
         } else {
+            debugger;
             var i = 0;
             var j = 0;
             valAntQue = valorAnterior.split("_");
@@ -87,10 +91,7 @@ $(document).ready(function () {
             data.map((val) => {
                 if (val.grupo == valAntQue[0]) {
                     val.permissao.map((val2) => {
-                        debugger;
                         if (val2 == valAntQue[1]) {
-                            data[i].permissao[j] = confirmar;
-                        } if (val2 == testeArray) {
                             data[i].permissao[j] = confirmar;
                         }
                         j++;
@@ -99,7 +100,11 @@ $(document).ready(function () {
                 i++;
             });
             console.log(data);
-            testeArray = confirmar;
+            $('#' + valorAnterior).attr('id', '' + grupo_Valor + '_' + selecionado + '');
+            $(this).attr('valor', '' + grupo_Valor + '_' + selecionado + '');
+            $('.' + valorAnterior).attr('valorRemover', '' + grupo_Valor + '_' + selecionado + '');
+            $('.' + valorAnterior).toggleClass(valorAnterior + ' ' + grupo_Valor + '_' + selecionado);
+            valorAnterior = $(this).attr("valor");
         }
     });
 
@@ -131,8 +136,8 @@ $(document).ready(function () {
         var adicionar = $(this).attr("adicionar");
         $('.adicionar').hide();
         $('.bloquearLink').css("pointer-events", "none");
-        $("#" + adicionar).prepend('<div class="row sendoModificado" id="adicionarDiv"><div class="col-5">' +
-            '<select id="editarEsseId_' + grupo_Valor + '" class="form-control" name="' + grupo_Valor + '">' +
+        $("#" + adicionar).prepend('<div class="row sendoModificado" id="editarEsseId_' + grupo_Valor + '_' + selecionado + '"><div class="col-5">' +
+            '<select id="selectId_' + grupo_Valor + '" class="form-control" name="' + grupo_Valor + '">' +
             '<option value="" data-default disabled selected></option>' +
             '<option value="editar">editar</option>' +
             '<option value="excluir">excluir</option>' +
@@ -149,7 +154,8 @@ $(document).ready(function () {
     });
 
     $('.tab-content').on('click', '.cancelar', function () {
-        $('#adicionarDiv').remove();
+        valorData = $(this).attr("valorData");
+        $('#valorData').remove();
         $('.adicionar').removeAttr("style");
         $(".bloquearLink").css("pointer-events", "");
 
@@ -159,16 +165,22 @@ $(document).ready(function () {
         if (selecionado == "") {
             alert("Selecione uma permissão");
         } else {
+            $('.sendoModificado').attr('id', 'editarEsseId_' + grupo_Valor + '_' + selecionado);
+            $('.confirmar').attr('valorData', 'editarEsseId_' + grupo_Valor + '_' + selecionado);
+            $('.cancelar').attr('valorData', 'editarEsseId_' + grupo_Valor + '_' + selecionado);
+            $('.confirmar').attr('selectId', 'selectId_' + grupo_Valor + '_' + selecionado);
+            $('.cancelar').attr('selectId', 'selectId_' + grupo_Valor + '_' + selecionado);
             $(".confirmar").toggleClass('btn-success btn-outline-primary');
             $(".confirmar").html('<i class="las la-pen" style="font-size: 25px"></i>');
             $(".confirmar").toggleClass('confirmar editarNovo');
             $(".cancelar").toggleClass('btn-danger btn-outline-danger');
             $(".cancelar").html('<i class="las la-trash-alt" style="font-size: 25px"></i>');
             $(".cancelar").toggleClass('cancelar removerNovo');
-            $("#editarEsseId_" + grupo_Valor).prop('disabled', true);
+            $("#selectId_" + grupo_Valor).prop('disabled', true);
             $('.adicionar').removeAttr("style");
             $(".bloquearLink").css("pointer-events", "");
             $(".sendoModificado").toggleClass('sendoModificado modificado');
+            $('#selectId_' + grupo_Valor).attr('id', 'selectId_' + grupo_Valor + '_' + selecionado);
             data.map((val) => {
                 if (val.grupo == grupo_Valor) {
                     val.permissao.push(selecionado);
@@ -182,15 +194,19 @@ $(document).ready(function () {
 
     $('.tab-content').on('click', '.editarNovo', function (event) {
         if ($(this).is(".btn-outline-primary")) {
+            valorData = $(this).attr("valorData");
+            selectId = $(this).attr("selectId");
             $(this).html('<i class="las la-check-double" style="font-size: 25px"></i>');
             $(this).toggleClass('btn-outline-primary btn-outline-success');
-            $("#editarEsseId_" + grupo_Valor).prop('disabled', false);
+            $("#" + selectId).prop('disabled', false);
         } else {
             var i = 0;
             var j = 0;
+            $('#' + valorData).attr('id', 'editarEsseId_' + grupo_Valor + '_' + selecionado);
+            $(this).attr('valorData', 'editarEsseId_' + grupo_Valor + '_' + selecionado);
             $(this).html('<i class="las la-pen" style="font-size: 25px"></i>');
             $(this).toggleClass('btn-outline-success btn-outline-primary');
-            $("#editarEsseId_" + grupo_Valor).prop('disabled', true);
+            $("#" + selectId).prop('disabled', true);
             data.map((val) => {
                 if (val.grupo == grupo_Valor) {
                     val.permissao.map((val2) => {
@@ -212,8 +228,11 @@ $(document).ready(function () {
     $('.tab-content').on('click', '.removerNovo', function () {
         var i = 0;
         var j = 0;
-        var removerArrayNovo = $("#editarEsseId_" + grupo_Valor + " option:selected").val();
-        $('#adicionarDiv').remove();
+        selectId = $(this).attr("selectId");
+        var removerArrayNovo = $("#" + selectId + " option:selected").val();
+        valorData = $(this).attr("valorData");
+        novoData = valorData.split("_");
+        $('#' + valorData).remove();
         data.map((val) => {
             if (val.grupo == grupo_Valor) {
                 val.permissao.map((val2) => {
