@@ -111,12 +111,20 @@ $(document).ready(function () {
         };
     });
 
-    $('.tab-content').on('click', '.editar', function (event) {
+    $('.tab-content').on('click', '.cancelar', function () {
+       let removerDiv = $(this).attr("removerDiv");
+        $('#' + removerDiv).remove();
+        $('.adicionar').removeAttr("style");
+        $(".bloquearLink").css("pointer-events", "");
+
+    });
+
+    $('.tab-content').on('click', '.editar', function () {
         selectId = $(this).attr("selectId");
         $('#list-tab a').each(function (index) {
             if ($(this).hasClass('active')) {
                 grupo_Valor = $(this).text();
-            }
+            };
         });
         if ($(this).is(".btn-outline-primary")) {
             valorAnterior = $("#" + selectId + " option:selected").val();
@@ -135,36 +143,37 @@ $(document).ready(function () {
                     val.permissao.map((val2) => {
                         if (val2 == valorAnterior) {
                             gruposPermissao[i].permissao[j] = confirmar;
-                        }
-                        j++;
-                    })
-                }
-                i++;
-            });
-            window.localStorage.setItem('grupo', JSON.stringify(gruposPermissao));
-            console.log(gruposPermissao);
-        }
-
-        $('.tab-content').on('click', '.remover', function () {
-            debugger;
-            var i = 0;
-            var j = 0;
-            let removerDiv = $(this).attr("removerDiv");
-            selectId = $(this).attr("selectId");
-            valorAnterior = $("#" + selectId + " option:selected").val();
-            $('#' + removerDiv).remove();
-            gruposPermissao.map((val) => {
-                if (val.grupo == grupo_Valor) {
-                    val.permissao.map((val2) => {
-                        if (val2 == valorAnterior) {
-                            data[i].permissao.splice([j], 1);
-                        }
+                        };
                         j++;
                     });
                 };
                 i++;
             });
+            window.localStorage.setItem('grupo', JSON.stringify(gruposPermissao));
+            console.log(gruposPermissao);
+        };
+    });
+
+    $('.tab-content').on('click', '.remover', function () {
+        var i = 0;
+        var j = 0;
+        let removerDiv = $(this).attr("removerDiv");
+        selectId = $(this).attr("selectId");
+        valorAnterior = $("#" + selectId + " option:selected").val();
+        $('#' + removerDiv).remove();
+        gruposPermissao.map((val) => {
+            if (val.grupo == grupo_Valor) {
+                val.permissao.map((val2) => {
+                    if (val2 == valorAnterior) {
+                        debugger;
+                        gruposPermissao[i].permissao.splice([j], 1);
+                    };
+                    j++;
+                });
+            };
+            i++;
         });
+        window.localStorage.setItem('grupo', JSON.stringify(gruposPermissao));
     });
 
     function create_UUID() {
