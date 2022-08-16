@@ -1,9 +1,9 @@
-var grupos = [];
-var valorInput = '';
-var editarBanco = '';
-var valorAntigo = '';
 $(document).ready(function () {
-    var html = '';
+    let grupos = [];
+    let valorInput = '';
+    let editarBanco = '';
+    let valorAntigo = '';
+    let html = '';
     if (window.localStorage.getItem('grupo')) {
         grupos = JSON.parse(window.localStorage.getItem('grupo'));
         grupos.map((val) => {
@@ -55,13 +55,12 @@ $(document).ready(function () {
     });
 
     $('#adicionarDiv').on('click', '.confirmar', function () {
-        var valorConfirmar = $("#campo").val();
+        let valorConfirmar = $("#campo").val();
         if ($('#campo').val() == '') {
             alert('Por favor preencha o campo');
         } else {
-            var control = true
+            let control = true
             grupos.map((val) => {
-                debugger;
                 if (val.grupo == valorConfirmar) {
                     alert("Esse grupo já existe");
                     control = false
@@ -91,7 +90,7 @@ $(document).ready(function () {
 
     $('#adicionarDiv').on('click', '.editar', function () {
         editarBanco = $(this).attr('editarBanco');
-        var valorInputLocal = $("#campoId_" + editarBanco).val();
+        let valorInputLocal = $("#campoId_" + editarBanco).val();
         if ($("#campoId_" + editarBanco).val() == '') {
             alert('Por favor preencha o campo');
         } else {
@@ -100,7 +99,7 @@ $(document).ready(function () {
                 $(this).toggleClass('btn-outline-primary btn-outline-success');
                 $("#campoId_" + editarBanco).prop('disabled', false);
             } else {
-                var i = 0;
+                let i = 0;
                 $(this).html('<i class="las la-pen" style="font-size: 25px"></i>');
                 $(this).toggleClass('btn-outline-success btn-outline-primary');
                 $("#campoId_" + editarBanco).prop('disabled', true);
@@ -118,8 +117,8 @@ $(document).ready(function () {
     });
 
     $('#adicionarDiv').on('click', '.remover', function () {
-        var i = 0;
-        var removerDiv = $(this).attr('removerDiv');
+        let i = 0;
+        let removerDiv = $(this).attr('removerDiv');
         valorInput = $("#campoId_" + removerDiv).val();
         window.localStorage.clear();
         $('#' + removerDiv).remove();
@@ -131,14 +130,14 @@ $(document).ready(function () {
         });
         window.localStorage.setItem('grupo', JSON.stringify(grupos));
     });
-});
 
-function create_UUID() {
-    var dt = new Date().getTime();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = (dt + Math.random() * 16) % 16 | 0;
-        dt = Math.floor(dt / 16);
-        return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-    });
-    return uuid;
-}
+    function create_UUID() {
+        let dt = new Date().getTime();
+        let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            let r = (dt + Math.random() * 16) % 16 | 0;
+            dt = Math.floor(dt / 16);
+            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+        return uuid;
+    }
+});

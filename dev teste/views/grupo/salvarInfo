@@ -287,3 +287,48 @@ function controleCancelar() {
 
     selecionado = ''
 }
+
+
+
+
+
+////////////////////////////////////////////////////////////////
+
+$('.tab-content').on('click', '.editar', function (event) {
+    var selectId = '';
+    $('#list-tab a').each(function (index) {
+        if ($(this).hasClass('active')) {
+            grupo_Valor = $(this).text();
+        }
+    });
+    if ($(this).is(".btn-outline-primary")) {
+        selectId = $(this).attr("selectId");
+        $(this).html('<i class="las la-check-double" style="font-size: 25px"></i>');
+        $(this).toggleClass('btn-outline-primary btn-outline-success');
+        $("#" + selectId).prop('disabled', false);
+    } else {
+        var i = 0;
+        var j = 0;
+        var confirmar = $("#" + selectId + " option:selected").val();
+        $(this).html('<i class="las la-pen" style="font-size: 25px"></i>');
+        $(this).toggleClass('btn-outline-success btn-outline-primary');
+        $("#" + selectId).prop('disabled', true);
+        grupos.map((val) => {
+            if (val.grupo == grupo_Valor) {
+                val.permissao.map((val2) => {
+                    if (val2 == confirmar) {
+                        data[i].permissao[j] = confirmar;
+                    }
+                    j++;
+                })
+            }
+            i++;
+        });
+        console.log(data);
+        $('#' + selectId).attr('id', '' + grupo_Valor + '_' + selecionado + '');
+        $(this).attr('valor', '' + grupo_Valor + '_' + selecionado + '');
+        $('.' + selectId).attr('valorRemover', '' + grupo_Valor + '_' + selecionado + '');
+        $('.' + selectId).toggleClass(selectId + ' ' + grupo_Valor + '_' + selecionado);
+        selectId = $(this).attr("valor");
+    }
+});
