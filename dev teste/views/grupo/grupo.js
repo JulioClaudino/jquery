@@ -33,6 +33,10 @@ $(document).ready(function () {
     }
 
     $('#adicionarDiv').on('click', '.adicionar', function () {
+        $('.remover').prop('disabled', true);
+        $('.editar').prop('disabled', true);
+        $('#sair').prop('disabled', true);
+        $('a').css("pointer-events", "none");
         $('.adicionar').hide();
         $('#adicionarDiv').prepend('<div id="excluir" class="list-group" id="list-tab" role="tablist">' +
             '<div class="row justify-content-center">' +
@@ -50,6 +54,10 @@ $(document).ready(function () {
     });
 
     $('#adicionarDiv').on('click', '.cancelar', function () {
+        $('.remover').prop('disabled', false);
+        $('.editar').prop('disabled', false);
+        $('#sair').prop('disabled', false);
+        $('a').css("pointer-events", "");
         $('#excluir').remove();
         $('.adicionar').removeAttr("style");
     });
@@ -69,6 +77,10 @@ $(document).ready(function () {
             if (control) {
                 if ($(this).is(".btn-success")) {
                     valorInput = create_UUID();
+                    $('a').css("pointer-events", "");
+                    $('.remover').prop('disabled', false);
+                    $('.editar').prop('disabled', false);
+                    $('#sair').prop('disabled', false);
                     $(this).html('<i class="las la-pen" style="font-size: 25px"></i>');
                     $(this).toggleClass('btn-success btn-outline-primary');
                     $(this).toggleClass('confirmar editar');
@@ -95,11 +107,22 @@ $(document).ready(function () {
             alert('Por favor preencha o campo');
         } else {
             if ($(this).is(".btn-outline-primary")) {
+                $('.adicionar').hide();
+                $('a').css("pointer-events", "none");
+                $('.remover').prop('disabled', true);
+                $('.editar').prop('disabled', true);
+                $('#sair').prop('disabled', true);
+                $(this).prop('disabled', false);
                 $(this).html('<i class="las la-check-double" style="font-size: 25px"></i>');
                 $(this).toggleClass('btn-outline-primary btn-outline-success');
                 $("#campoId_" + editarBanco).prop('disabled', false);
             } else {
                 let i = 0;
+                $('.adicionar').removeAttr("style");
+                $('a').css("pointer-events", "");
+                $('.remover').prop('disabled', false);
+                $('.editar').prop('disabled', false);
+                $('#sair').prop('disabled', false);
                 $(this).html('<i class="las la-pen" style="font-size: 25px"></i>');
                 $(this).toggleClass('btn-outline-success btn-outline-primary');
                 $("#campoId_" + editarBanco).prop('disabled', true);

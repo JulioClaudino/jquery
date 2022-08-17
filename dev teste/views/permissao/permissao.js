@@ -55,15 +55,18 @@ $(document).ready(function () {
 
     $('.tab-content').on('click', '.adicionar', function () {
         let adicionar = $(this).attr("adicionar");
+        valorAnterior = "";
         UUID = create_UUID();
         $('#list-tab a').each(function (index) {
             if ($(this).hasClass('active')) {
                 grupo_Valor = $(this).text();
             };
         });
-
+        $('.remover').prop('disabled', true);
+        $('.editar').prop('disabled', true);
+        $('#sair').prop('disabled', true);
         $('.adicionar').hide();
-        $('.bloquearLink').css("pointer-events", "none");
+        $('a').css("pointer-events", "none");
         $("#" + adicionar).prepend('<div class="row" id="editarEsseId_' + UUID + '"><div class="col-5">' +
             '<select id="selectId_' + UUID + '" class="form-control">' +
             '<option value="" data-default disabled selected></option>' +
@@ -80,14 +83,14 @@ $(document).ready(function () {
             '</div></div>');
     });
 
-    $('.tab-content').on('change', 'select', function () {
-    });
-
     $('.tab-content').on('click', '.confirmar', function () {
         if ($("#selectId_" + UUID + " option:selected").val() == "") {
             alert("Selecione uma permissão");
         } else {
             let selecionado = $("#selectId_" + UUID + " option:selected").val();
+            $('#sair').prop('disabled', false);
+            $('.remover').prop('disabled', false);
+            $('.editar').prop('disabled', false);
             $(".confirmar").toggleClass('btn-success btn-outline-primary');
             $(".confirmar").html('<i class="las la-pen" style="font-size: 25px"></i>');
             $(".confirmar").toggleClass('confirmar editar');
@@ -96,7 +99,7 @@ $(document).ready(function () {
             $(".cancelar").toggleClass('cancelar remover');
             $("#selectId_" + UUID).prop('disabled', true);
             $('.adicionar').removeAttr("style");
-            $(".bloquearLink").css("pointer-events", "");
+            $('a').css("pointer-events", "");
             gruposPermissao.map((val) => {
                 if (val.grupo == grupo_Valor) {
                     if (val.permissao) {
@@ -106,17 +109,19 @@ $(document).ready(function () {
                     };
                 };
             });
-            window.localStorage.setItem('grupo', JSON.stringify(gruposPermissao));
+            window.localStorage.setItem('permissao', JSON.stringify(gruposPermissao));
             console.log(gruposPermissao);
         };
     });
 
     $('.tab-content').on('click', '.cancelar', function () {
-       let removerDiv = $(this).attr("removerDiv");
+        let removerDiv = $(this).attr("removerDiv");
         $('#' + removerDiv).remove();
         $('.adicionar').removeAttr("style");
-        $(".bloquearLink").css("pointer-events", "");
-
+        $('a').css("pointer-events", "");
+        $('.editar').prop('disabled', false);
+        $('.remover').prop('disabled', false);
+        $('#sair').prop('disabled', false);
     });
 
     $('.tab-content').on('click', '.editar', function () {
@@ -128,6 +133,12 @@ $(document).ready(function () {
         });
         if ($(this).is(".btn-outline-primary")) {
             valorAnterior = $("#" + selectId + " option:selected").val();
+            $('.remover').prop('disabled', true);
+            $('.editar').prop('disabled', true);
+            $('#sair').prop('disabled', true);
+            $(this).prop('disabled', false);
+            $('.adicionar').hide();
+            $('a').css("pointer-events", "none");
             $(this).html('<i class="las la-check-double" style="font-size: 25px"></i>');
             $(this).toggleClass('btn-outline-primary btn-outline-success');
             $("#" + selectId).prop('disabled', false);
@@ -135,6 +146,11 @@ $(document).ready(function () {
             let i = 0;
             let j = 0;
             let confirmar = $("#" + selectId + " option:selected").val();
+            $('.remover').prop('disabled', false);
+            $('.editar').prop('disabled', false);
+            $('#sair').prop('disabled', false);
+            $('.adicionar').removeAttr("style");
+            $('a').css("pointer-events", "");
             $(this).html('<i class="las la-pen" style="font-size: 25px"></i>');
             $(this).toggleClass('btn-outline-success btn-outline-primary');
             $("#" + selectId).prop('disabled', true);
@@ -149,7 +165,7 @@ $(document).ready(function () {
                 };
                 i++;
             });
-            window.localStorage.setItem('grupo', JSON.stringify(gruposPermissao));
+            window.localStorage.setItem('permissao', JSON.stringify(gruposPermissao));
             console.log(gruposPermissao);
         };
     });
@@ -160,12 +176,16 @@ $(document).ready(function () {
         let removerDiv = $(this).attr("removerDiv");
         selectId = $(this).attr("selectId");
         valorAnterior = $("#" + selectId + " option:selected").val();
+        $('#list-tab a').each(function (index) {
+            if ($(this).hasClass('active')) {
+                grupo_Valor = $(this).text();
+            };
+        });
         $('#' + removerDiv).remove();
         gruposPermissao.map((val) => {
             if (val.grupo == grupo_Valor) {
                 val.permissao.map((val2) => {
                     if (val2 == valorAnterior) {
-                        debugger;
                         gruposPermissao[i].permissao.splice([j], 1);
                     };
                     j++;
@@ -173,7 +193,27 @@ $(document).ready(function () {
             };
             i++;
         });
-        window.localStorage.setItem('grupo', JSON.stringify(gruposPermissao));
+        window.localStorage.setItem('permissao', JSON.stringify(gruposPermissao));
+        console.log(gruposPermissao);
+    });
+
+    $('.tab-content').on('change', 'select', function () {
+        selecionado = $(this).val();
+        gruposPermissao.map((val) => {
+            if (val.grupo == grupo_Valor) {
+                if (val.permissao) {
+                    val.permissao.map((val2) => {
+                        if (val2 == selecionado) {
+                            $("button[valor='" + valorAnterior + "']").removeClass('btn-outline-success');
+                            $("button[valor='" + valorAnterior + "']").addClass('btn-outline-primary');
+                            $("button[valor='" + valorAnterior + "']").html('<i class="las la-pen" style="font-size: 25px"></i>');
+                            $("option[value='" + valorAnterior + "']", this).prop('selected', true);
+                            alert("A função " + selecionado + " já está cadastrada nesse grupo!");
+                        };
+                    });
+                };
+            };
+        });
     });
 
     function create_UUID() {
@@ -186,4 +226,3 @@ $(document).ready(function () {
         return uuid;
     };
 });
-
