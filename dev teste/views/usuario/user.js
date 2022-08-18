@@ -1,17 +1,11 @@
 $(document).ready(function () {
-    const cadastro = [];
-    let data = {
-        usuario: "",
-        email: "",
-        password: ""
-    };
+    let cadastro = [];
     let usuario = "";
     let email = "";
     let password = "";
-
     if (window.localStorage.getItem('usuario')) {
         cadastro = JSON.parse(window.localStorage.getItem('usuario'));
-    }
+    };
 
     $('#cadastroDiv').on('click', '.confirmar', function () {
         usuario = $('#nome').val();
@@ -22,10 +16,10 @@ $(document).ready(function () {
             return false;
         };
 
-        data.usuario = $("#nome").val();
-        data.email = $("#exampleInputEmail").val();
-        data.password = $("#exampleInputPassword").val();
-        cadastro.push(data);
+        usuario = $("#nome").val();
+        email = $("#exampleInputEmail").val();
+        password = $("#exampleInputPassword").val();
+        cadastro.push({ "usuario": usuario, "email": email, "password": password });
         window.localStorage.setItem('usuario', JSON.stringify(cadastro));
     });
 
@@ -57,26 +51,28 @@ $(document).ready(function () {
             alert('A senha tem que ter 7 caracteres.');
             return false;
         };
+
+        let usuariosCad = cadastro.find((val) => {
+            if (val.usuario == usuario) {
+                return val;
+            };
+        });
+
+        if (usuariosCad !== undefined) {
+            alert('Esse usuario já existe.');
+            return false;
+        };
+
+        let emailCad = cadastro.find((val) => {
+            if (val.email == email) {
+                return val;
+            };
+        });
+
+        if (emailCad !== undefined) {
+            alert('Esse email já existe.');
+            return false;
+        };
         return true;
     };
-});
-
-
-
-
-cadastro.filter((val) => {
-    if (val.usuario == usuario) {
-        alert("Esse usuario já existe.")
-        return false;
-    };
-    if (val.email == email) {
-        alert("Esse email já existe.")
-        return false;
-    };
-});
-
-cadastro.find((val) => {
-    if (val.usuario == usuario) {
-        alert("Esse usuario já existe.");
-    }
 });

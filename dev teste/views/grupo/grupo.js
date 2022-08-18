@@ -95,6 +95,7 @@ $(document).ready(function () {
                     $("#campo").attr('id', 'campoId_' + valorInput);
                     grupos.push({ 'grupo': $('#campoId_' + valorInput).val() });
                     window.localStorage.setItem('grupo', JSON.stringify(grupos));
+                    console.log(grupos);
                 }
             }
         }

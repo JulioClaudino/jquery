@@ -24,7 +24,13 @@ $(document).ready(function () {
                 if (val.email == email) {
                     if (val.password == password) {
                         window.location = 'home.html';
+                    } else {
+                        $('#Nome-Do-Login').html('<div class="alert alert-danger" role="alert">Senha incorreto</div>');
+                        $(this).html('Confirmar');
                     }
+                } else {
+                    $('#Nome-Do-Login').html('<div class="alert alert-danger" role="alert">Email incorreto</div>');
+                    $(this).html('Confirmar');
                 }
             });
         };
@@ -35,7 +41,7 @@ $(document).ready(function () {
         let illegalChars = /[\(\)\<\>\,\;\:\\\/\"\[\]]/
 
         if (email == '') {
-            mensagem = $('#Nome-Do-Login').html('Favor informar um email');
+            mensagem = $('#Nome-Do-Login').html('<div class="alert alert-danger" role="alert">Favor informar um email</div>');
             return false;
         }
 
@@ -46,12 +52,12 @@ $(document).ready(function () {
         }
 
         if (password == '') {
-            mensagem = $('#Nome-Do-Login').html('Deve ser informado uma senha');
+            mensagem = $('#Nome-Do-Login').html('<div class="alert alert-danger" role="alert">Deve ser informado uma senha</div>');
             return false;
         }
 
         if (password.length <= 6) {
-            mensagem = $('#Nome-Do-Login').html('A senha tem que ter 7 caracteres');
+            mensagem = $('#Nome-Do-Login').html('<div class="alert alert-danger" role="alert">A senha tem que ter 7 caracteres</div>');
             return false;
         }
         else {

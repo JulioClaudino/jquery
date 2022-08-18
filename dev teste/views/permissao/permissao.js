@@ -1,16 +1,16 @@
 $(document).ready(function () {
-    let gruposPermissao = [];
+    let grupos = [];
     let UUID = '';
     let grupo_Valor = '';
     let selectId = '';
     let valorAnterior = '';
     if (window.localStorage.getItem('grupo')) {
-        gruposPermissao = JSON.parse(window.localStorage.getItem('grupo'));
+        grupos = JSON.parse(window.localStorage.getItem('grupo'));
         let html = '';
         let poderes = '';
         let control = true;
 
-        gruposPermissao.map((val) => {
+        grupos.map((val) => {
             UUID = create_UUID();
             html += '<a style="" class="list-group-item list-group-item-action bloquearLink' + (control ? ' active' : '') + '"' +
                 'id="grupos_' + UUID + '-list" data-toggle="list"' +
@@ -100,7 +100,7 @@ $(document).ready(function () {
             $("#selectId_" + UUID).prop('disabled', true);
             $('.adicionar').removeAttr("style");
             $('a').css("pointer-events", "");
-            gruposPermissao.map((val) => {
+            grupos.map((val) => {
                 if (val.grupo == grupo_Valor) {
                     if (val.permissao) {
                         val.permissao.push(selecionado);
@@ -109,8 +109,8 @@ $(document).ready(function () {
                     };
                 };
             });
-            window.localStorage.setItem('permissao', JSON.stringify(gruposPermissao));
-            console.log(gruposPermissao);
+            window.localStorage.setItem('grupo', JSON.stringify(grupos));
+            console.log(grupos);
         };
     });
 
@@ -154,19 +154,19 @@ $(document).ready(function () {
             $(this).html('<i class="las la-pen" style="font-size: 25px"></i>');
             $(this).toggleClass('btn-outline-success btn-outline-primary');
             $("#" + selectId).prop('disabled', true);
-            gruposPermissao.map((val) => {
+            grupos.map((val) => {
                 if (val.grupo == grupo_Valor) {
                     val.permissao.map((val2) => {
                         if (val2 == valorAnterior) {
-                            gruposPermissao[i].permissao[j] = confirmar;
+                            grupos[i].permissao[j] = confirmar;
                         };
                         j++;
                     });
                 };
                 i++;
             });
-            window.localStorage.setItem('permissao', JSON.stringify(gruposPermissao));
-            console.log(gruposPermissao);
+            window.localStorage.setItem('grupo', JSON.stringify(grupos));
+            console.log(grupos);
         };
     });
 
@@ -182,24 +182,24 @@ $(document).ready(function () {
             };
         });
         $('#' + removerDiv).remove();
-        gruposPermissao.map((val) => {
+        grupos.map((val) => {
             if (val.grupo == grupo_Valor) {
                 val.permissao.map((val2) => {
                     if (val2 == valorAnterior) {
-                        gruposPermissao[i].permissao.splice([j], 1);
+                        grupos[i].permissao.splice([j], 1);
                     };
                     j++;
                 });
             };
             i++;
         });
-        window.localStorage.setItem('permissao', JSON.stringify(gruposPermissao));
-        console.log(gruposPermissao);
+        window.localStorage.setItem('grupo', JSON.stringify(grupos));
+        console.log(grupos);
     });
 
     $('.tab-content').on('change', 'select', function () {
         selecionado = $(this).val();
-        gruposPermissao.map((val) => {
+        grupos.map((val) => {
             if (val.grupo == grupo_Valor) {
                 if (val.permissao) {
                     val.permissao.map((val2) => {

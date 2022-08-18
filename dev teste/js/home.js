@@ -7,6 +7,9 @@ $('#Permissao').click(function () {
 $('#Grupo').click(function () {
     createPage('grupo/grupo.html');
 });
+$('#atribuirGrupo').click(function () {
+    createPage('atribuirGrupo/atribuirGrupo.html');
+});
 $('#Amostra').click(function () {
     createPage('amostra/amostra.html');
 });
