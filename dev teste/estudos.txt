@@ -3,3 +3,5 @@ https://www.horadecodar.com.br/2021/09/06/como-salvar-arrays-na-localstorage-de-
 https://javascript.info/indexeddb
 
 https://learnjavascript.online/
+
+adonis 4.1 e nods -> urgente

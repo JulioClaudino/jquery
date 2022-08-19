@@ -1,45 +1,44 @@
 $(document).ready(function () {
-    let listaUsuarios = [];
-    let grupoUsuarios = [];
     let pegarUsuarios = [];
-    let tornarArray = "";
-    let valorAnterior = ""
+    let permissaoUsuarios = [];
+    let permissaoArray = "";
     let UUID = "";
-    let grupo_Valor = "";
-    let selectId = "";
-    if (window.localStorage.getItem('grupo')) {
+    let grupo_Valor = '';
+    let selectId = '';
+    let valorAnterior = '';
+    if (window.localStorage.getItem('usuario')) {
         pegarUsuarios = JSON.parse(window.localStorage.getItem('usuario'));
-        grupoUsuarios = JSON.parse(window.localStorage.getItem('grupo'));
-        if (window.localStorage.getItem('grupoUsuario')) {
-            listaUsuarios = JSON.parse(window.localStorage.getItem('grupoUsuario'));
+        if (window.localStorage.getItem('permissaoUsuario')) {
+            permissaoUsuarios = JSON.parse(window.localStorage.getItem('permissaoUsuario'));
         };
         let html = '';
         let poderes = '';
         let control = true;
 
-        grupoUsuarios.map((val) => {
+        pegarUsuarios.map((val) => {
             UUID = create_UUID();
             html += '<a style="" class="list-group-item list-group-item-action bloquearLink' + (control ? ' active' : '') + '"' +
                 'id="grupos_' + UUID + '-list" data-toggle="list"' +
-                'href="#list_' + UUID + '" role="tab" aria-controls="' + UUID + '">' + val.grupo + '</a>';
+                'href="#list_' + UUID + '" role="tab" aria-controls="' + UUID + '">' + val.usuario + '</a>';
 
-            if (listaUsuarios) {
+            if (permissaoUsuarios) {
                 poderes += '<div class="tab-pane fade show' + (control ? ' active' : '') + '" id="list_' + UUID + '"' +
                     'role="tabpanel" aria-labelledby="list_' + UUID + '-list">';
-                listaUsuarios.map((val2) => {
-                    if (val2.grupo == val.grupo) {
+                permissaoUsuarios.map((val2) => {
+                    if (val2.usuario == val.usuario) {
                         UUIDPERMISSAO = create_UUID();
                         poderes += '<div id="selectDiv_' + UUIDPERMISSAO + '" class="row"><div class="col-5">' +
-                            '<select id="selectId_' + UUIDPERMISSAO + '" class="form-control" disabled>';
-                        pegarUsuarios.map((val3) => {
-                            poderes += '<option value="' + val3.usuario + '" ' + (val3.usuario === val2.usuario ? 'selected' : '') + '>' + val3.usuario + '</option>';
-                        });
-                        poderes += '</select></div >' +
+                            '<select id="selectId_' + UUIDPERMISSAO + '" class="form-control" disabled>' +
+                            '<option value="editar" ' + (val2.permissao === "editar" ? 'selected' : '') + '>editar</option>' +
+                            '<option value="excluir" ' + (val2.permissao === "excluir" ? 'selected' : '') + '>excluir</option>' +
+                            '<option value="incluir" ' + (val2.permissao === "incluir" ? 'selected' : '') + '>incluir</option>' +
+                            '<option value="visualizar" ' + (val2.permissao === "visualizar" ? 'selected' : '') + '>visualizar</option>' +
+                            '</select></div >' +
                             '<div class="col-1 botaoum">' +
-                            '<button class="btn btn-outline-primary editar" selectId="selectId_' + UUIDPERMISSAO + '" type="button data-toggle="tooltip" data-placement="top" title="Deletar opção ' + val2.usuario + '""><i class="las la-pen" style="font-size: 25px"></i></button>' +
+                            '<button class="btn btn-outline-primary editar" selectId="selectId_' + UUIDPERMISSAO + '" type="button data-toggle="tooltip" data-placement="top" title="Deletar opção ' + val2.permissao + '""><i class="las la-pen" style="font-size: 25px"></i></button>' +
                             '</div>' +
                             '<div class="col-1 botaodois">' +
-                            '<button class="btn btn-outline-danger remover" removerDiv="selectDiv_' + UUIDPERMISSAO + '" selectId="selectId_' + UUIDPERMISSAO + '" type="button data-toggle="tooltip" data-placement="top" title="Deletar opção ' + val2.usuario + '""><i class="las la-trash-alt" style="font-size: 25px"></i></button>' +
+                            '<button class="btn btn-outline-danger remover" removerDiv="selectDiv_' + UUIDPERMISSAO + '" selectId="selectId_' + UUIDPERMISSAO + '" type="button data-toggle="tooltip" data-placement="top" title="Deletar opção ' + val2.permissao + '""><i class="las la-trash-alt" style="font-size: 25px"></i></button>' +
                             '</div></div>';
                     };
                 });
@@ -70,23 +69,25 @@ $(document).ready(function () {
                 grupo_Valor = $(this).text();
             };
         });
-        let selectUsuarios = '<div class="row" id="editarEsseId_' + UUID + '"><div class="col-5"><select id="selectId_' + UUID + '" class="form-control"><option value="" data-default disabled selected></option>';
-        pegarUsuarios.map((val2) => {
-            selectUsuarios += '<option value="' + val2.usuario + '">' + val2.usuario + '</option>';
-        });
-        selectUsuarios += '</select></div >' +
-            '<div class="col-1 botaoum">' +
-            '<button class="btn btn-success confirmar" selectId="selectId_' + UUID + '" data-toggle="tooltip" data-placement="top"><i class="lar la-check-circle" style="font-size: 25px"></i></button>' +
-            '</div>' +
-            '<div class="col-1 botaodois">' +
-            '<button class="btn btn-danger cancelar" removerDiv="editarEsseId_' + UUID + '" selectId="selectId_' + UUID + '" data-toggle="tooltip" data-placement="top"><i class="las la-ban" style="font-size: 25px"></i></button>' +
-            '</div></div>';
         $('.remover').prop('disabled', true);
         $('.editar').prop('disabled', true);
         $('#sair').prop('disabled', true);
         $('.adicionar').hide();
         $('a').css("pointer-events", "none");
-        $("#" + adicionar).prepend(selectUsuarios);
+        $("#" + adicionar).prepend('<div class="row" id="editarEsseId_' + UUID + '"><div class="col-5">' +
+            '<select id="selectId_' + UUID + '" class="form-control">' +
+            '<option value="" data-default disabled selected></option>' +
+            '<option value="editar">editar</option>' +
+            '<option value="excluir">excluir</option>' +
+            '<option value="incluir">incluir</option>' +
+            '<option value="visualizar">visualizar</option>' +
+            '</select></div >' +
+            '<div class="col-1 botaoum">' +
+            '<button class="btn btn-success confirmar" selectId="selectId_' + UUID + '" data-toggle="tooltip" data-placement="top"><i class="lar la-check-circle" style="font-size: 25px"></i></button>' +
+            '</div>' +
+            '<div class="col-1 botaodois">' +
+            '<button class="btn btn-danger cancelar" removerDiv="editarEsseId_' + UUID + '" selectId="selectId_' + UUID + '" data-toggle="tooltip" data-placement="top"><i class="las la-ban" style="font-size: 25px"></i></button>' +
+            '</div></div>');
     });
 
     $('.tab-content').on('click', '.cancelar', function () {
@@ -101,7 +102,7 @@ $(document).ready(function () {
 
     $('.tab-content').on('click', '.confirmar', function () {
         if ($("#selectId_" + UUID + " option:selected").val() == "") {
-            alert("Selecione um usuario");
+            alert("Selecione uma permissão");
         } else {
             let selecionado = $("#selectId_" + UUID + " option:selected").val();
             $('#sair').prop('disabled', false);
@@ -116,24 +117,24 @@ $(document).ready(function () {
             $("#selectId_" + UUID).prop('disabled', true);
             $('.adicionar').removeAttr("style");
             $('a').css("pointer-events", "");
-            grupoUsuarios.map((val) => {
-                if (val.grupo == grupo_Valor) {
-                    if (listaUsuarios == "") {
-                        tornarArray = selecionado;
+            pegarUsuarios.map((val) => {
+                if (val.usuario == grupo_Valor) {
+                    if (permissaoUsuarios == "") {
+                        permissaoArray = selecionado;
                     } else {
-                        listaUsuarios.map((val2) => {
+                        permissaoUsuarios.map((val2) => {
                             if (val2.usuario) {
-                                tornarArray = selecionado;
+                                permissaoArray = selecionado;
                             } else {
-                                tornarArray = selecionado;
+                                permissaoArray = selecionado;
                             };
                         });
                     };
                 };
             });
-            listaUsuarios.push({ "grupo": grupo_Valor, "usuario": tornarArray });
-            window.localStorage.setItem('grupoUsuario', JSON.stringify(listaUsuarios));
-            console.log(listaUsuarios);
+            permissaoUsuarios.push({ "usuario": grupo_Valor, "permissao": permissaoArray });
+            window.localStorage.setItem('permissaoUsuario', JSON.stringify(permissaoUsuarios));
+            console.log(permissaoUsuarios);
         };
     });
 
@@ -156,7 +157,6 @@ $(document).ready(function () {
             $(this).toggleClass('btn-outline-primary btn-outline-success');
             $("#" + selectId).prop('disabled', false);
         } else {
-
             let i = 0;
             let confirmar = $("#" + selectId + " option:selected").val();
             $('.remover').prop('disabled', false);
@@ -167,17 +167,17 @@ $(document).ready(function () {
             $(this).html('<i class="las la-pen" style="font-size: 25px"></i>');
             $(this).toggleClass('btn-outline-success btn-outline-primary');
             $("#" + selectId).prop('disabled', true);
-            localStorage.removeItem('grupoUsuario');
-            listaUsuarios.map((val2) => {
-                if (val2.grupo == grupo_Valor) {
-                    if (val2.usuario == valorAnterior) {
-                        listaUsuarios[i].usuario = confirmar;
+            localStorage.removeItem('permissaoUsuario');
+            permissaoUsuarios.map((val2) => {
+                if (val2.usuario == grupo_Valor) {
+                    if (val2.permissao == valorAnterior) {
+                        permissaoUsuarios[i].permissao = confirmar;
                     };
                 };
                 i++;
             });
-            window.localStorage.setItem('grupoUsuario', JSON.stringify(listaUsuarios));
-            console.log(listaUsuarios);
+            window.localStorage.setItem('permissaoUsuario', JSON.stringify(permissaoUsuarios));
+            console.log(permissaoUsuarios);
         };
     });
 
@@ -186,28 +186,35 @@ $(document).ready(function () {
         let removerDiv = $(this).attr("removerDiv");
         selectId = $(this).attr("selectId");
         valorAnterior = $("#" + selectId + " option:selected").val();
+        $('#list-tab a').each(function (index) {
+            if ($(this).hasClass('active')) {
+                grupo_Valor = $(this).text();
+            };
+        });
         $('#' + removerDiv).remove();
         localStorage.removeItem('grupoUsuario');
-        listaUsuarios.map((val) => {
-            if (val.usuario == valorAnterior) {
-                listaUsuarios.splice([i], 1);
-            }
+        permissaoUsuarios.map((val2) => {
+            if (val2.usuario == grupo_Valor) {
+                if (val2.permissao == valorAnterior) {
+                    permissaoUsuarios.splice([i], 1);
+                };
+            };
             i++;
         });
-        window.localStorage.setItem('grupoUsuario', JSON.stringify(listaUsuarios));
+        window.localStorage.setItem('permissaoUsuario', JSON.stringify(permissaoUsuarios));
     });
 
     $('.tab-content').on('change', 'select', function () {
         let selecionado = $(this).val();
-        listaUsuarios.map((val) => {
-            if (val.grupo == grupo_Valor) {
-                if (val.usuario) {
-                    if (val.usuario == selecionado) {
+        permissaoUsuarios.map((val) => {
+            if (val.usuario == grupo_Valor) {
+                if (val.permissao) {
+                    if (val.permissao == selecionado) {
                         $("button[valor='" + valorAnterior + "']").removeClass('btn-outline-success');
                         $("button[valor='" + valorAnterior + "']").addClass('btn-outline-primary');
                         $("button[valor='" + valorAnterior + "']").html('<i class="las la-pen" style="font-size: 25px"></i>');
                         $("option[value='" + valorAnterior + "']", this).prop('selected', true);
-                        alert(selecionado + " já pertence a esse grupo!");
+                        alert("O " + grupo_Valor + " já tem esse permissão!");
                     };
                 };
             };

@@ -10,6 +10,9 @@ $('#Grupo').click(function () {
 $('#atribuirGrupo').click(function () {
     createPage('atribuirGrupo/atribuirGrupo.html');
 });
+$('#AtribuirPermissao').click(function () {
+    createPage('Atribuirpermissao/AtribuirPermissao.html');
+});
 $('#Amostra').click(function () {
     createPage('amostra/amostra.html');
 });

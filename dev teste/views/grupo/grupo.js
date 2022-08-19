@@ -127,7 +127,7 @@ $(document).ready(function () {
                 $(this).html('<i class="las la-pen" style="font-size: 25px"></i>');
                 $(this).toggleClass('btn-outline-success btn-outline-primary');
                 $("#campoId_" + editarBanco).prop('disabled', true);
-                window.localStorage.clear();
+                localStorage.removeItem('grupo');
                 grupos.map((val) => {
                     if (val.grupo == valorAntigo) {
                         grupos[i].grupo = valorInputLocal;
@@ -144,7 +144,7 @@ $(document).ready(function () {
         let i = 0;
         let removerDiv = $(this).attr('removerDiv');
         valorInput = $("#campoId_" + removerDiv).val();
-        window.localStorage.clear();
+        localStorage.removeItem('grupo');
         $('#' + removerDiv).remove();
         grupos.map((val) => {
             if (val.grupo == valorInput) {
