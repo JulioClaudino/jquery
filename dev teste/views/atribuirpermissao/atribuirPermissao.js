@@ -192,7 +192,7 @@ $(document).ready(function () {
             };
         });
         $('#' + removerDiv).remove();
-        localStorage.removeItem('grupoUsuario');
+        localStorage.removeItem('permissaoUsuario');
         permissaoUsuarios.map((val2) => {
             if (val2.usuario == grupo_Valor) {
                 if (val2.permissao == valorAnterior) {

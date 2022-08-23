@@ -1,11 +1,15 @@
 $(document).ready(function () {
     let grupos = [];
+    let teajusteListaUsuarios = [];
     let valorInput = '';
     let editarBanco = '';
     let valorAntigo = '';
     let html = '';
     if (window.localStorage.getItem('grupo')) {
         grupos = JSON.parse(window.localStorage.getItem('grupo'));
+        if (window.localStorage.getItem('grupoUsuario')) {
+            teajusteListaUsuarios = JSON.parse(window.localStorage.getItem('grupoUsuario'));
+        };
         grupos.map((val) => {
             valorInput = create_UUID();
             html += '<div id="' + valorInput + '" class="list-group" id="list-tab" role="tablist">' +
@@ -142,6 +146,7 @@ $(document).ready(function () {
 
     $('#adicionarDiv').on('click', '.remover', function () {
         let i = 0;
+        let j = 0;
         let removerDiv = $(this).attr('removerDiv');
         valorInput = $("#campoId_" + removerDiv).val();
         localStorage.removeItem('grupo');
@@ -152,6 +157,16 @@ $(document).ready(function () {
             }
             i++;
         });
+        // if (teajusteListaUsuarios.length !== 0) {
+        //     localStorage.removeItem('grupoUsuario');
+        //     teajusteListaUsuarios.map((val) => {
+        //         if (val.grupo == valorInput) {
+        //             teajusteListaUsuarios.splice([j], 1);
+        //         };
+        //         j++;
+        //     });
+        //     window.localStorage.setItem('grupoUsuario', JSON.stringify(teajusteListaUsuarios));
+        // };
         window.localStorage.setItem('grupo', JSON.stringify(grupos));
     });
 
