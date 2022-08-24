@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    let cadastro = [];
     $('#Confirmar').click(function () {
         let email = $('#exampleInputEmail1').val();
         let password = $('#exampleInputPassword1').val();
@@ -27,11 +28,14 @@ $(document).ready(function () {
                     } else {
                         $('#Nome-Do-Login').html('<div class="alert alert-danger" role="alert">Senha incorreto</div>');
                         $(this).html('Confirmar');
+                        return false;
                     }
                 } else {
-                    $('#Nome-Do-Login').html('<div class="alert alert-danger" role="alert">Email incorreto</div>');
-                    $(this).html('Confirmar');
-                }
+                    if (val.password != password) {
+                        $('#Nome-Do-Login').html('<div class="alert alert-danger" role="alert">Email incorreto</div>');
+                        $(this).html('Confirmar');
+                    };
+                };
             });
         };
     });
