@@ -1,10 +1,8 @@
 $(document).ready(function () {
-    let cadastro = [];
+
     $('#Confirmar').click(function () {
         let email = $('#exampleInputEmail1').val();
         let password = $('#exampleInputPassword1').val();
-
-        $(this).html('Processando...');
 
         if (!validicao(email, password)) {
             $(this).html('Confirmar');
@@ -18,26 +16,30 @@ $(document).ready(function () {
             console.log("Desmarcado");
         }
 
-        if (window.localStorage.getItem('usuario')) {
-            cadastro = JSON.parse(window.localStorage.getItem('usuario'));
-
-            cadastro.map((val) => {
-                if (val.email == email) {
-                    if (val.password == password) {
+        $.ajax({
+            url: "http://localhost:3000/users?email=" + email,
+            type: 'get',
+            beforeSend: function () {
+                $(this).html('Processando...');
+            }
+        })
+            .done(function (msg) {
+                console.log(msg[0]);
+                debugger;
+                if (msg.length !== 0) {
+                    if (msg[0].password === password) {
                         window.location = 'home.html';
                     } else {
                         $('#Nome-Do-Login').html('<div class="alert alert-danger" role="alert">Senha incorreto</div>');
                         $(this).html('Confirmar');
-                        return false;
-                    }
-                } else {
-                    if (val.password != password) {
-                        $('#Nome-Do-Login').html('<div class="alert alert-danger" role="alert">Email incorreto</div>');
-                        $(this).html('Confirmar');
                     };
-                };
+                } else {
+                    $('#Nome-Do-Login').html('<div class="alert alert-danger" role="alert">Email incorreto</div>');
+                }
+            })
+            .fail(function (jqXHR, textStatus, msg) {
+                alert(msg);
             });
-        };
     });
 
     function validicao(email, password) {
@@ -45,27 +47,27 @@ $(document).ready(function () {
         let illegalChars = /[\(\)\<\>\,\;\:\\\/\"\[\]]/
 
         if (email == '') {
-            mensagem = $('#Nome-Do-Login').html('<div class="alert alert-danger" role="alert">Favor informar um email</div>');
+            $('#Nome-Do-Login').html('<div class="alert alert-danger" role="alert">Favor informar um email</div>');
+
             return false;
         }
 
         if (!(emailFilter.test(email)) || email.match(illegalChars)) {
-            $('#Nome-Do-Login').show().removeClass("ok").addClass("erro")
-                .text('Por favor, informe um email valido.');
+            $('#Nome-Do-Login').html('<div class="alert alert-danger" role="alert">Por favor, informe um email valido</div>');
             return false;
         }
 
         if (password == '') {
-            mensagem = $('#Nome-Do-Login').html('<div class="alert alert-danger" role="alert">Deve ser informado uma senha</div>');
+            $('#Nome-Do-Login').html('<div class="alert alert-danger" role="alert">Deve ser informado uma senha</div>');
             return false;
         }
 
         if (password.length <= 6) {
-            mensagem = $('#Nome-Do-Login').html('<div class="alert alert-danger" role="alert">A senha tem que ter 7 caracteres</div>');
+            $('#Nome-Do-Login').html('<div class="alert alert-danger" role="alert">A senha tem que ter 7 caracteres</div>');
             return false;
         }
         else {
-            mensagem = $('#Nome-Do-Login').html('');
+            $('#Nome-Do-Login').html('');
         }
         return true;
     }

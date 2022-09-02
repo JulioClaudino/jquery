@@ -1,15 +1,11 @@
 $(document).ready(function () {
     let grupos = [];
-    let teajusteListaUsuarios = [];
     let valorInput = '';
     let editarBanco = '';
     let valorAntigo = '';
     let html = '';
     if (window.localStorage.getItem('grupo')) {
         grupos = JSON.parse(window.localStorage.getItem('grupo'));
-        if (window.localStorage.getItem('grupoUsuario')) {
-            teajusteListaUsuarios = JSON.parse(window.localStorage.getItem('grupoUsuario'));
-        };
         grupos.map((val) => {
             valorInput = create_UUID();
             html += '<div id="' + valorInput + '" class="list-group" id="list-tab" role="tablist">' +
@@ -24,7 +20,7 @@ $(document).ready(function () {
                 '<div class="col-1 offset-md-1">' +
                 '<div id="buttonCancelar" class="input-group-append">' +
                 '<button class="btn btn-outline-danger remover" removerDiv="' + valorInput + '" type="button"><i class="las la-trash-alt" style="font-size: 25px"></i></button>' +
-                '</div></div></div></div></div></div>'
+                '</div></div></div></div></div></div>';
         });
         html += '<div id="buttonAdicionar" class="col-md-6 offset-md-8"><button class="btn btn-outline-primary adicionar" type="button">' +
             '<i class="las la-plus" style="font-size: 20px"></i></button ></div>';
@@ -100,9 +96,29 @@ $(document).ready(function () {
                     grupos.push({ 'grupo': $('#campoId_' + valorInput).val() });
                     window.localStorage.setItem('grupo', JSON.stringify(grupos));
                     console.log(grupos);
-                }
+                };
+            };
+        };
+
+        let value = {
+            grupo: valorConfirmar,
+        };
+        $.ajax({
+            url: "http://localhost:3000/grupos",
+            type: 'post',
+            data: value,
+            beforeSend: function () {
+                alert("Cadastro feito com sucesso.");
             }
-        }
+        })
+            .done(function (msg) {
+                document.getElementById('nome').value = '';
+                document.getElementById('exampleInputEmail').value = '';
+                document.getElementById('exampleInputPassword').value = '';
+            })
+            .fail(function (jqXHR, textStatus, msg) {
+                alert(msg);
+            });
     });
 
     $('#adicionarDiv').on('click', '.editar', function () {
@@ -157,16 +173,6 @@ $(document).ready(function () {
             }
             i++;
         });
-        // if (teajusteListaUsuarios.length !== 0) {
-        //     localStorage.removeItem('grupoUsuario');
-        //     teajusteListaUsuarios.map((val) => {
-        //         if (val.grupo == valorInput) {
-        //             teajusteListaUsuarios.splice([j], 1);
-        //         };
-        //         j++;
-        //     });
-        //     window.localStorage.setItem('grupoUsuario', JSON.stringify(teajusteListaUsuarios));
-        // };
         window.localStorage.setItem('grupo', JSON.stringify(grupos));
     });
 
